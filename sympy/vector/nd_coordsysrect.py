@@ -8,7 +8,6 @@ from sympy import symbols, MatrixBase, ImmutableDenseMatrix,\
     eye, trigsimp, ImmutableMatrix as Matrix, Symbol, sin, cos,\
     sqrt, diff, Tuple, acos, atan2, simplify
 from sympy.solvers import solve
-
 from sympy.vector.nd_scalar import BaseScalar
 import sympy.vector
 from sympy.vector.nd_orienters import (Orienter, AxisOrienter, BodyOrienter,
@@ -56,7 +55,11 @@ class CoordSysND(Basic):
             Used for simple str printing.
 
         """
-            
+        ld=locals()
+        dimArgNames=["parent","location","rotation_matrix","vector_names","variable_names","dim"]
+        dimArgVals=[ld[argName] for argName in dimArgNames]
+        if all([arg is None for arg in dimArgVals]):
+           raise ValueError("Dimension could not be inferred At least one of {0} has to be present.".format(dimArgNames))
 
         name = str(name)
         Vector = sympy.vector.Vector
@@ -206,6 +209,8 @@ class CoordSysND(Basic):
             elif isinstance(transformation, Symbol):
                 if transformation.name is 'hyperspherical':
                     variable_names = ["r"] + ["phi_{0}".format(i) for i in range(1,n)]
+                elif transformation.name is 'cartesian':
+                    variable_names = ["x_{0}".format(i) for i in range(0,n)]
                 #elif transformation.name is 'cylindrical':
                 #    variable_names = ["r", "theta", "z"]
                 #else:
