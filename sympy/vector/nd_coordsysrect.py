@@ -157,7 +157,6 @@ class CoordSysND(Basic):
             transformation = Tuple(rotation_matrix, location)
 
         if isinstance(transformation, Tuple):
-            print("############## Tuple #############")
             lambda_transformation = CoordSysND._compose_rotation_and_translation(
                 transformation[0],
                 transformation[1],
@@ -165,17 +164,13 @@ class CoordSysND(Basic):
             )
             r, l = transformation
             l = l._projections(n)
-            print("############## r , l#############")
-            print(r,l)
             lambda_lame = CoordSysND._get_lame_coeff('cartesian',n)
             #lambda_inverse = lambda x, y, z: r.inv()*Matrix([x-l[0], y-l[1], z-l[2]])
             #sbs=symbols(["x{0}".format(i) for i in range(n)])
             sbs=cls.dummy_symbols(n)
             lambda_inverse = lambda *sbs: r.inv()*Matrix([sbs[i]-l[i] for i in range(n)])
-            print("##############  lambda_inverse #############")
 
         elif isinstance(transformation, Symbol):
-            print("############## Symbol #############")
             trname = transformation.name
             lambda_transformation = CoordSysND._get_transformation_lambdas(trname)
             if parent is not None:
@@ -185,7 +180,6 @@ class CoordSysND(Basic):
             lambda_lame = CoordSysND._get_lame_coeff(trname,n)
             lambda_inverse = CoordSysND._set_inv_trans_equations(trname)
         elif isinstance(transformation, Lambda):
-            print("############## Lambda #############")
             if not CoordSysND._check_orthogonality(transformation,n):
                 raise ValueError("The transformation equation does not "
                                  "create orthogonal coordinate system")
@@ -204,8 +198,6 @@ class CoordSysND(Basic):
                 pass
                 source_tup=transformation.args[0]
                 variable_names= [str(var) for var in source_tup] 
-                print('##################### variable_names ###################3')
-                print(variable_names)
             elif isinstance(transformation, Symbol):
                 if transformation.name is 'hyperspherical':
                     variable_names = ["r"] + ["phi_{0}".format(i) for i in range(1,n)]
@@ -238,8 +230,6 @@ class CoordSysND(Basic):
 
         obj._name = name
         obj.dim=n
-        print('n=dim=')
-        print(n)
         # Initialize the base vectors
 
         _check_strings('vector_names', vector_names,obj.dim)
@@ -271,8 +261,6 @@ class CoordSysND(Basic):
         obj._transformation = transformation
         obj._transformation_lambda = lambda_transformation
         #obj._lame_coefficients = lambda_lame(x1, x2, x3)
-        print("################## lambda_lame ###################")
-        print(lambda_lame)
     
     
         obj._lame_coefficients = lambda_lame(*base_scalars)
@@ -463,8 +451,6 @@ class CoordSysND(Basic):
                 for j in range(dim)
             ]
         )
-        print("#######################################3333 res ##################3")
-        print(res)
         return lambda *sbs:res
 
     def _inverse_rotation_matrix(self):
@@ -519,8 +505,6 @@ class CoordSysND(Basic):
             Transformation equations
 
         """
-        print("################ matrix, equations   ##########################")
-        print(matrix,equations)
         return tuple(matrix * Matrix(equations))
 
     @property
@@ -1109,9 +1093,6 @@ class CoordSysND(Basic):
         r = lambda *sbs: CoordSysND._rotation_trans_equations(rot, tuple(sbs))
 
         if parent is None:
-            print("################ CoordSysND._rotation_trans_equations(rot, tuple(sbs)) ##########################")
-            print(CoordSysND._rotation_trans_equations(rot, tuple(sbs)))
-            print("##########################################")
             return r
 
         #dx, dy, dz = [translation.dot(i) for i in parent.base_vectors()]

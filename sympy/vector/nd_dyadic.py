@@ -86,6 +86,8 @@ class Dyadic(BasisDependent):
 
     __and__.__doc__ = dot.__doc__
 
+    # fixme mm:
+    # disable vor n!=3
     def cross(self, other):
         """
         Returns the cross product between this Dyadic, and a Vector, as a
@@ -170,7 +172,7 @@ class Dyadic(BasisDependent):
             second_system = system
 
         return Matrix([i.dot(self).dot(j) for i in system for j in
-                       second_system]).reshape(3, 3)
+                       second_system]).reshape(system.dim, system.dim)
 
 
 class BaseDyadic(Dyadic, AtomicExpr):
